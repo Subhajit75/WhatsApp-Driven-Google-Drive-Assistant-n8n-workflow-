@@ -386,6 +386,14 @@ if (expected !== signature) {
 
 return $json;
 ```
+
+---
+## 🧮 Workflow Diagram
+
+Here’s an overview of the WhatsApp-Driven Google Drive Assistant workflow:
+
+![Workflow Diagram](assets/workflow-diagram.png)
+
 ---
 
 ## 📫 Contact
