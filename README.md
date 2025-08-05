@@ -28,7 +28,7 @@ WhatsApp-GDrive-Assistant/
 ├── .github/
 │ └── workflows/
 │  └── ci.yml # CI workflow for GitHub Actions
-
+│
 │── assets/
 │   ├── workflow-diagram.png    # Optional workflow screenshot
 │   └── demo-video.mp4     #Demo video
