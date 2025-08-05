@@ -131,9 +131,17 @@ Follow the steps below to create and connect your credentials in n8n.
 
 
 ### **1. Create a Google Cloud Project**
-1. Go to [Google Cloud Console](https://console.cloud.google.com/).  
-2. Click **Select a project → New Project**.  
-3. Give your project a name (e.g., `WhatsApp-GDrive-Assistant`) and click **Create**.
+
+To use the workflow, create Google OAuth2 credentials:
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project → Enable **Google Drive API**.
+3. Navigate to **APIs & Services > Credentials**.
+4. Click **Create Credentials → OAuth client ID**.
+5. Set type to **Web Application**.
+6. Add your `n8n` callback URL (from your cloud instance or localhost).
+7. Download the JSON and configure it in n8n under **Google Drive OAuth2** credentials.
+
 
 
 ### **2. Enable Google Drive API**
