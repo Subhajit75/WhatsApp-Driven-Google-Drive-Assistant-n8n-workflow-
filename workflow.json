@@ -1,0 +1,213 @@
+{
+  "name": "WhatsApp-Driven Google Drive Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp",
+        "responseMode": "lastNode"
+      },
+      "id": "1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const body = $json.body || $json;\nconst msg = (body.Body || body.message || '').trim();\nconst [command, ...args] = msg.split(' ');\nreturn [{\n  command: command.toUpperCase(),\n  args: args,\n  from: body.From || body.from || ''\n}];"
+      },
+      "id": "2",
+      "name": "Parse Command",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "propertyName": "={{$json[\"command\"]}}",
+        "rules": [
+          { "operation": "equal", "value": "LIST" },
+          { "operation": "equal", "value": "DELETE" },
+          { "operation": "equal", "value": "MOVE" },
+          { "operation": "equal", "value": "SUMMARY" }
+        ]
+      },
+      "id": "3",
+      "name": "Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "filters": {
+          "q": "name contains '{{ $json.args[0].replace(\"/\", \"\") }}'"
+        }
+      },
+      "id": "4",
+      "name": "List Files",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "credentials": { "googleApi": "Google Drive OAuth2" },
+      "position": [800, 100]
+    },
+    {
+      "parameters": {
+        "functionCode": "const files = $json.files || [];\nif (files.length === 0) {\n  return [{ reply: 'No files found.' }];\n}\nreturn [{ reply: files.map(f => `• ${f.name}`).join('\\n') }];"
+      },
+      "id": "5",
+      "name": "Format List Reply",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1000, 100]
+    },
+    {
+      "parameters": {
+        "from": "whatsapp:+14155238886",
+        "to": "={{$json[\"from\"]}}",
+        "message": "={{$json[\"reply\"]}}"
+      },
+      "id": "6",
+      "name": "Send WhatsApp Reply",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "credentials": { "twilioApi": "Twilio API" },
+      "position": [1200, 100]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "fileId": "={{$json.args[0]}}"
+      },
+      "id": "7",
+      "name": "Delete File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "credentials": { "googleApi": "Google Drive OAuth2" },
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{ reply: '✅ File deleted successfully!' }];"
+      },
+      "id": "8",
+      "name": "Format Delete Reply",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": "={{$json.args[0]}}",
+        "folderId": "={{$json.args[1]}}"
+      },
+      "id": "9",
+      "name": "Move File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "credentials": { "googleApi": "Google Drive OAuth2" },
+      "position": [800, 500]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{ reply: '✅ File moved successfully!' }];"
+      },
+      "id": "10",
+      "name": "Format Move Reply",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1000, 500]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "filters": {
+          "q": "name contains '{{ $json.args[0].replace(\"/\", \"\") }}'"
+        }
+      },
+      "id": "11",
+      "name": "Get Folder Files",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "credentials": { "googleApi": "Google Drive OAuth2" },
+      "position": [800, 700]
+    },
+    {
+      "parameters": {
+        "functionCode": "const files = $json.files || [];\nconst prompt = files.length === 0\n  ? 'No files found to summarize.'\n  : 'Generate a bullet-point summary for these files: ' + files.map(f => f.name).join(', ');\nreturn [{ prompt }];"
+      },
+      "id": "12",
+      "name": "Prepare Summary Prompt",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1000, 700]
+    },
+    {
+      "parameters": {
+        "operation": "chat",
+        "model": "gpt-4o-mini",
+        "messages": [
+          {
+            "role": "user",
+            "content": "={{$json[\"prompt\"]}}"
+          }
+        ]
+      },
+      "id": "13",
+      "name": "Summarize Files",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "credentials": { "openAiApi": "OpenAI API" },
+      "position": [1200, 700]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{ reply: $json.data || 'Summary unavailable.' }];"
+      },
+      "id": "14",
+      "name": "Format Summary Reply",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1400, 700]
+    },
+    {
+      "parameters": {
+        "from": "whatsapp:+14155238886",
+        "to": "={{$json[\"from\"]}}",
+        "message": "={{$json[\"reply\"]}}"
+      },
+      "id": "15",
+      "name": "Send WhatsApp Reply Final",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "credentials": { "twilioApi": "Twilio API" },
+      "position": [1600, 700]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Parse Command", "type": "main", "index": 0 }]] },
+    "Parse Command": { "main": [[{ "node": "Router", "type": "main", "index": 0 }]] },
+    "Router": {
+      "main": [
+        [{ "node": "List Files", "type": "main", "index": 0 }],
+        [{ "node": "Delete File", "type": "main", "index": 0 }],
+        [{ "node": "Move File", "type": "main", "index": 0 }],
+        [{ "node": "Get Folder Files", "type": "main", "index": 0 }]
+      ]
+    },
+    "List Files": { "main": [[{ "node": "Format List Reply", "type": "main", "index": 0 }]] },
+    "Format List Reply": { "main": [[{ "node": "Send WhatsApp Reply", "type": "main", "index": 0 }]] },
+    "Delete File": { "main": [[{ "node": "Format Delete Reply", "type": "main", "index": 0 }]] },
+    "Format Delete Reply": { "main": [[{ "node": "Send WhatsApp Reply", "type": "main", "index": 0 }]] },
+    "Move File": { "main": [[{ "node": "Format Move Reply", "type": "main", "index": 0 }]] },
+    "Format Move Reply": { "main": [[{ "node": "Send WhatsApp Reply", "type": "main", "index": 0 }]] },
+    "Get Folder Files": { "main": [[{ "node": "Prepare Summary Prompt", "type": "main", "index": 0 }]] },
+    "Prepare Summary Prompt": { "main": [[{ "node": "Summarize Files", "type": "main", "index": 0 }]] },
+    "Summarize Files": { "main": [[{ "node": "Format Summary Reply", "type": "main", "index": 0 }]] },
+    "Format Summary Reply": { "main": [[{ "node": "Send WhatsApp Reply Final", "type": "main", "index": 0 }]] }
+  },
+  "active": false
+}
