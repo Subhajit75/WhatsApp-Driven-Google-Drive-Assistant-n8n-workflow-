@@ -1,4 +1,4 @@
-name: JavaScript CI Workflow
+name: JavaScript CI
 
 on:
   push:
