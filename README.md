@@ -31,7 +31,7 @@ WhatsApp-GDrive-Assistant/
 │   └── formatReply.js          # Optional: Helper for WhatsApp reply
 └── assets/
     ├── workflow-diagram.png    # Optional workflow screenshot
-    └── demo-video-link.txt     # Placeholder for Loom/YouTube link
+    └── demo-video.mp4     #Demo video
 
 ```
 
