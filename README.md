@@ -25,17 +25,22 @@ It is built using n8n, Twilio WhatsApp API, Google Drive API, and OpenAI GPT-4o.
 ## 📂 File Structure 
 ```bash 
 WhatsApp-GDrive-Assistant/
+├── .github/
+│ └── workflows/
+│  └── ci.yml # CI workflow for GitHub Actions
+
+│── assets/
+│   ├── workflow-diagram.png    # Optional workflow screenshot
+│   └── demo-video.mp4     #Demo video
 │
-├── README.md                  # Full project documentation
-├── workflow.json               # Ready-to-import n8n workflow
-├── .env.sample                 # Sample environment variables
 ├── helper-scripts/
 │   ├── summarizeDoc.js         # Optional: For custom doc parsing
 │   └── formatReply.js          # Optional: Helper for WhatsApp reply
-└── assets/
-    ├── workflow-diagram.png    # Optional workflow screenshot
-    └── demo-video.mp4     #Demo video
-
+│
+├── .env.sample                 # Sample environment variables
+├── LICENSE                     # MIT License
+├── README.md                  # Full project documentation
+└── workflow.json               # Ready-to-import n8n workflow
 ```
 
 
