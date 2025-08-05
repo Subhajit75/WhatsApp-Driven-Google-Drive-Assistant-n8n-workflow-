@@ -1,5 +1,8 @@
 ## WhatsApp-Driven Google Drive Assistant (n8n workflow)
 
+[![JS CI](https://github.com/Subhajit75/WhatsApp-Driven-Google-Drive-Assistant-n8n-workflow-/actions/workflows/ci.yml/badge.svg)](https://github.com/Subhajit75/WhatsApp-Driven-Google-Drive-Assistant-n8n-workflow-/actions/workflows/ci.yml)
+
+
 This project is an AI-powered WhatsApp Assistant that integrates with Google Drive to perform file management tasks and generate document summaries directly via WhatsApp.
 
 It is built using n8n, Twilio WhatsApp API, Google Drive API, and OpenAI GPT-4o.
