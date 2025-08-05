@@ -1,0 +1,83 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js (for JS linting)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 3. Install ESLint for linting JS scripts
+      - name: Install ESLint
+        run: npm install eslint@8 --save-dev
+
+      # 4. Lint helper scripts
+      - name: Run ESLint
+        run: |
+          if [ -d "helper-scripts" ]; then
+            npx eslint helper-scripts/**/*.js || exit 1
+          else
+            echo "No helper-scripts folder found. Skipping lint."
+          fi
+
+      # 5. Validate workflow.json
+      - name: Validate workflow.json
+        run: |
+          if [ ! -f "workflow.json" ]; then
+            echo "❌ workflow.json missing!" && exit 1
+          fi
+          node -e "
+          try {
+            JSON.parse(require('fs').readFileSync('workflow.json', 'utf8'));
+            console.log('✅ workflow.json is valid JSON');
+          } catch (err) {
+            console.error('❌ Invalid JSON:', err.message);
+            process.exit(1);
+          }
+          "
+
+      # 6. Check README for required sections
+      - name: Validate README.md
+        run: |
+          if [ ! -f "README.md" ]; then
+            echo "❌ README.md is missing!" && exit 1
+          fi
+
+          # Required sections for Task 2
+          REQUIRED_SECTIONS=("Twilio Sandbox" "Google Credentials" "Command Syntax" "Slash-Command Help" "Natural-Language Parser" "Webhook-Secured Endpoint")
+
+          for section in "${REQUIRED_SECTIONS[@]}"; do
+            if ! grep -iq "$section" README.md; then
+              echo "❌ README.md missing section: $section"
+              exit 1
+            fi
+          done
+
+          echo "✅ README.md has all required sections."
+
+      # 7. Check for required project files
+      - name: Verify Project Structure
+        run: |
+          REQUIRED_FILES=("workflow.json" "README.md" ".env.sample")
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Missing file: $file" && exit 1
+            fi
+          done
+          echo "✅ All required files exist."
