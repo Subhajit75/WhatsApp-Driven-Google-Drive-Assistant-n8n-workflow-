@@ -69,8 +69,8 @@ cp .env.sample .env
    - **OpenAI API**
 5. **Save** and **activate** the workflow.
 
-
-### 4️⃣ Twilio WhatsApp Sandbox Setup**
+---
+## Twilio Sandbox
 
 Follow these steps to set up Twilio WhatsApp Sandbox for this project:
 
@@ -124,13 +124,14 @@ docker run -it --rm \
 - Access n8n at http://localhost:5678.
 
 ---
-## **Google Drive OAuth2 Credentials Setup**
+
+## Google Credentials
 
 This project requires access to Google Drive to **list, move, delete, and summarize files**.  
 Follow the steps below to create and connect your credentials in n8n.
 
 
-### **1. Google Credentials
+### **1. Google Credentials console
 
 To use the workflow, create Google OAuth2 credentials:
 
@@ -188,7 +189,8 @@ To use the workflow, create Google OAuth2 credentials:
 - For production, configure **OAuth consent screen** and publish your app.
 
 ---
-## **Command Syntax**
+
+## Command Syntax
 
 Send the following commands via WhatsApp to the Twilio Sandbox number (e.g., `+14155238886`) to interact with your Google Drive:
 
@@ -234,7 +236,7 @@ SUMMARY /FolderName
 - Deleting files may require confirmation to prevent accidental deletion (can be implemented in n8n Function nodes).
 
 ---
-## **Slash-Command Help**
+## Slash-Command Help
 
 To get a list of available commands at any time, simply send:
 ```
@@ -265,7 +267,7 @@ You will receive a reply like:
 - You can extend this workflow to support more commands like `/rename`, `/upload`, etc.
 
 ---
-## **Natural Language Parser (Optional Feature)**
+## Natural-Language Parser
 
 Instead of requiring strict commands like `LIST /ProjectX`,  
 you can allow **casual, human-like instructions** using a Natural Language Parser.
@@ -329,7 +331,7 @@ return [{ command: "HELP", args: "" }];
     - Bot: • report.pdf → Quarterly report summary...
 
 ---
-## Webhook-Secured Endpoint (Optional but Recommended)
+## Webhook-Secured Endpoint
 
 By default, n8n webhooks (like `/webhook/whatsapp`) are **public**.  
 Anyone who knows the URL can trigger your workflow.  
