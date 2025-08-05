@@ -130,7 +130,7 @@ This project requires access to Google Drive to **list, move, delete, and summar
 Follow the steps below to create and connect your credentials in n8n.
 
 
-### **1. Create a Google Cloud Project**
+### **1. Google Credentials
 
 To use the workflow, create Google OAuth2 credentials:
 
@@ -141,6 +141,7 @@ To use the workflow, create Google OAuth2 credentials:
 5. Set type to **Web Application**.
 6. Add your `n8n` callback URL (from your cloud instance or localhost).
 7. Download the JSON and configure it in n8n under **Google Drive OAuth2** credentials.
+
 
 
 
