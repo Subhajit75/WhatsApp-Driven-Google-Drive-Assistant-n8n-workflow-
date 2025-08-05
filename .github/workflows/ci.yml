@@ -17,22 +17,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Setup Node.js (for JS linting)
+      # 2. Setup Node.js for linting & JSON validation
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      # 3. Install ESLint for linting JS scripts
+      # 3. Install ESLint
       - name: Install ESLint
         run: npm install eslint@8 --save-dev
 
-      # 4. Lint helper scripts (quick fix: skip config)
+      # 4. Lint helper scripts (ES2022 parser)
       - name: Run ESLint
         run: |
           if [ -d "helper-scripts" ]; then
-            echo "Running ESLint with no config for syntax checking..."
-            npx eslint --no-eslintrc --ext .js helper-scripts/ || exit 1
+            echo "Running ESLint with ES2022 parser..."
+            npx eslint --no-eslintrc --parser-options='{"ecmaVersion":2022,"sourceType":"module"}' --ext .js helper-scripts/ || exit 1
           else
             echo "No helper-scripts folder found. Skipping lint."
           fi
@@ -72,7 +72,7 @@ jobs:
 
           echo "✅ README.md has all required sections."
 
-      # 7. Check for required project files
+      # 7. Verify project structure
       - name: Verify Project Structure
         run: |
           REQUIRED_FILES=("workflow.json" "README.md" ".env.sample")
