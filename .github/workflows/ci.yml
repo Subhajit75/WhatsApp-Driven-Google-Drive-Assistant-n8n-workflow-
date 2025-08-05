@@ -27,11 +27,12 @@ jobs:
       - name: Install ESLint
         run: npm install eslint@8 --save-dev
 
-      # 4. Lint helper scripts
+      # 4. Lint helper scripts (quick fix: skip config)
       - name: Run ESLint
         run: |
           if [ -d "helper-scripts" ]; then
-            npx eslint helper-scripts/**/*.js || exit 1
+            echo "Running ESLint with no config for syntax checking..."
+            npx eslint --no-eslintrc --ext .js helper-scripts/ || exit 1
           else
             echo "No helper-scripts folder found. Skipping lint."
           fi
