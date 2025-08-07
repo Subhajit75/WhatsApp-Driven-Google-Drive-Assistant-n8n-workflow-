@@ -31,7 +31,7 @@ WhatsApp-GDrive-Assistant/
 │
 │── assets/
 │   ├── workflow-diagram.png    # Optional workflow screenshot
-│   └── demo-video.mp4     #Demo video
+│   └── demo-video.mp4           #Demo video
 │
 ├── helper-scripts/
 │   ├── summarizeDoc.js         # Optional: For custom doc parsing
